@@ -45,18 +45,27 @@ router.post('/sign-up', [
 router.post('/login', 
   passport.authenticate('local', { session: false }),
   (req, res) => {
-    const token = jwt.sign({
-      _id: req.user._id,
-      email: req.user.email,
-    }, 'CHANGEMEPLEASE!');
-    res.send({ token });
+    const token = jwt.sign(
+      {
+        _id: req.user._id,
+        email: req.user.email,
+      }, 
+      'CHANGEMEPLEASE!',
+      {
+        expiresIn: "2 days",
+      }
+    );
+    res.send({ token, expiresIn: "2 days" });
   }
 );
 
 router.get('/profile',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
-    res.send(req.user.email);    
+    res.send({
+      _id: req.user._id,
+      email: req.user.email,
+    });    
   }
 );
 
