@@ -21,7 +21,7 @@ userSchema.virtual('posts', {
   justOne: false,
 });
 
-userSchema.plugin(mongooseHidden());
+userSchema.plugin(mongooseHidden({ _id: false }));
 
 const User = mongoose.model('User', userSchema);
 
