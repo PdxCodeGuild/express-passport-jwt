@@ -20,7 +20,7 @@ passport.use(new JwtStrategy({
   }
 }));
 
-const verifyPassword = (password, passwordHash) => {
+const verifyPassword = (password, passwordHash = '') => {
   return bcrypt.compareSync(password, passwordHash, 10);
 };
 
@@ -31,8 +31,6 @@ passport.use(new LocalStrategy({
   async (email, password, done) => {
     try {
       const user = await User.findOne({ email });
-
-      console.log(user);
 
       if(!user) return done(null, false);
       if(!verifyPassword(password, user.passwordHash)) return done(null, false);
