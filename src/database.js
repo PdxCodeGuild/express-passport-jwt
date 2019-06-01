@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const connectDatabase = () => {
-  mongoose.connect('mongodb://localhost:27017/express-passport-jwt', {
+  mongoose.connect('mongodb://localhost:27017/tweeter-dev', {
     useCreateIndex: true,
     useNewUrlParser: true,
     useFindAndModify: false,

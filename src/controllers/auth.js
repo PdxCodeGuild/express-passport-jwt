@@ -18,6 +18,12 @@ router.post('/sign-up', [
 
   const { email, password, passwordConfirm } = req.body;
 
+  const userExists = await User.findOne({ email });
+
+  if(userExists) {
+    return res.status(400).send({error: 'user already exists'});
+  }
+
   if(password !== passwordConfirm) {
     res.status(400).send({error: 'passwords do not match'});
     return;
@@ -32,10 +38,7 @@ router.post('/sign-up', [
 
   try {
     await user.save();
-    res.send({
-      ...user._doc,
-      passwordHash: undefined,
-    });
+    res.send(user);
   } catch(error) {
     res.status(400).send(error.message);
   }
@@ -47,8 +50,8 @@ router.post('/login',
   (req, res) => {
     const token = jwt.sign(
       {
-        _id: req.user._id,
         email: req.user.email,
+        _id: req.user._id,
       }, 
       'CHANGEMEPLEASE!',
       {
@@ -56,16 +59,6 @@ router.post('/login',
       }
     );
     res.send({ token, expiresIn: "2 days" });
-  }
-);
-
-router.get('/profile',
-  passport.authenticate('jwt', { session: false }),
-  (req, res) => {
-    res.send({
-      _id: req.user._id,
-      email: req.user.email,
-    });    
   }
 );
 

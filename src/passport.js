@@ -11,7 +11,7 @@ passport.use(new JwtStrategy({
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 }, async (payload, done) => {
   try {
-    const user = await User.findOne({_id: payload._id});
+    const user = await User.findOne({_id: payload._id}).populate('posts');
     if(!user) return done(null, false);
     
     done(null, user);
@@ -31,6 +31,8 @@ passport.use(new LocalStrategy({
   async (email, password, done) => {
     try {
       const user = await User.findOne({ email });
+
+      console.log(user);
 
       if(!user) return done(null, false);
       if(!verifyPassword(password, user.passwordHash)) return done(null, false);
